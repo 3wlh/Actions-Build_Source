@@ -29,6 +29,7 @@ on:
           - api
           - wxpusher
           - aes_api
+          - netlink
 
 env:
   PACKAGE_NAME: ${{ inputs.Source_name }}
