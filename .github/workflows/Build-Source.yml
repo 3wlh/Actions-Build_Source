@@ -155,10 +155,16 @@ jobs:
           cd "${{ env.SDK_HOME }}/${{ env.Source_DIR }}"
           CPP=$(find . -type f -name "*.cpp" -exec basename {} \;)
           echo ${CPP}
-          # ${{ env.CXX }} -fsigned-char ${CPP} -o ${{ env.APP_DIR }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }}
-          # 优化大小
-          ${{ env.CXX }} -Os ${CPP} -o ${{ env.APP_DIR }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }}
-          # ${{ env.CXX }} ${CPP} -o ${{ env.APP_DIR }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }}
+          if [ -n "$CPP" ]; then
+            # ${{ env.CXX }} -fsigned-char ${CPP} -o ${{ env.APP_DIR }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }}
+            # 优化大小
+            ${{ env.CXX }} -Os ${CPP} -o ${{ env.APP_DIR }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }}
+            # ${{ env.CXX }} ${CPP} -o ${{ env.APP_DIR }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }}
+          else
+            C=$(find . -type f -name "*.c" -exec basename {} \;)
+            echo ${C}
+            ${{ env.CC }} -Os ${C} -o ${{ env.APP_DIR }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }}  
+          fi
           cd -
 
       - name: Copy Bin Files
