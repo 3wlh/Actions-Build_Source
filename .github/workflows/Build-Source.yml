@@ -28,7 +28,7 @@ on:
           - all
           - api
           - wxpusher
-          - aes_api
+          - openssl_cgi
           - netlink
 
 env:
