@@ -29,6 +29,7 @@ on:
           - api
           - wxpusher
           - openssl_cgi
+          - v2ray_cgi
           - netlink
 
 env:
