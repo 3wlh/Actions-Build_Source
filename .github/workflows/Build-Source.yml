@@ -28,8 +28,8 @@ on:
           - all
           - api
           - wxpusher
-          - openssl_cgi
-          - v2ray_cgi
+          - openssl.cgi
+          - v2ray.cgi
           - netlink
 
 env:
