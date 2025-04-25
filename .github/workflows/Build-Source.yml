@@ -5,13 +5,15 @@ on:
   workflow_dispatch:
     inputs:
       ssh:
-        description: "SSH connection to Actions"
+        description: |
+          是否启用SSH连接?
         required: false
         default: false
         type: boolean
       
       Version:
-        description: "Select the Version"
+        description: |
+          选择 OpenWrt 版本
         required: false
         default: "23.05.5"
         type: choice
@@ -20,7 +22,8 @@ on:
           - 24.10.0
       
       Source_name:
-        description: "Select the Source"
+        description: |
+          选择编译源码
         required: false
         default: "all"
         type: choice
