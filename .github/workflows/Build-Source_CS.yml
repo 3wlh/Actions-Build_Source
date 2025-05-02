@@ -36,7 +36,7 @@ on:
           - netlink
 
 env:
-  CACHE_PATH: ~/.cache
+  CACHE_PATH: /tmp/.cache
   PACKAGE_NAME: ${{ inputs.source_name }}
   SOURCE: OpenWrt/${{ inputs.Source_name }}/
   Download_URL: https://downloads.openwrt.org/releases/${{ inputs.Version }}/targets
