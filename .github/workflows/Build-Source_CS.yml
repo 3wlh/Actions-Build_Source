@@ -166,7 +166,7 @@ jobs:
         
       - name: Build and Source
         id: build
-        if: steps.source.outputs.source == 'success'
+        if: steps.source.outputs.status == 'success'
         run: |
           source /etc/profile
           cd "${{ env.SOURCE_PATH }}/${{ env.SOURCE }}"
@@ -194,7 +194,7 @@ jobs:
 
       - name: Upload to bin directory
         uses: actions/upload-artifact@main
-        if: steps.build.outputs.source == 'success' && ${{env.UPLOAD_BIN_DIR}} == 'true'
+        if: steps.build.outputs.status == 'success' && ${{env.UPLOAD_BIN_DIR}} == 'true'
         with:
           name: ${{ env.PACKAGE_NAME }}-${{ matrix.arch }}_${{ env.Time }}
           path: ${{ env.Build_PATH }} 
