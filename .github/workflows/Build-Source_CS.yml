@@ -188,7 +188,7 @@ jobs:
 
       - name: Create Edit info
         run: |
-          echo "## 编译时间：\`${{ env.time }}\`" > info.md
+          echo "## 编译时间：\`${{ env.Time }}\`" > info.md
           echo "## [![Github](https://img.shields.io/badge/Release文件可在国内加速站下载-FC7C0D?logo=github&logoColor=fff&labelColor=000&style=for-the-badge)](https://ghproxy.net/)" >> info.md
           echo "## 软件信息：" >> info.md
           echo "* SDK版本 \`${{ inputs.version }}\`" >> info.md
@@ -206,7 +206,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.Time }}
+          tag_name: ${{ matrix.arch }}_${{ env.PACKAGE_NAME }}
           body_path: info.md
           files: ${{ env.Build_PATH }}/*
 
