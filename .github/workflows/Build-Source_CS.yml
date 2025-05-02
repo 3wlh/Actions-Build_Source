@@ -125,12 +125,12 @@ jobs:
             else
               SDK_FILE="$(cat sha256sums.small | cut -d' ' -f2 | sed 's/*//g')"
               if ! sha256sum -c ./sha256sums.small >/dev/null 2>&1 ; then
-                wget -qO "${SDK_FILE}" "${Download_URL}/${SDK_URL_PATH}/${SDK_FILE}" --show-progress
+                wget -qO "/tmp/${SDK_FILE}" "${Download_URL}/${SDK_URL_PATH}/${SDK_FILE}" # --show-progress
                 if ! sha256sum -c ./sha256sums.small >/dev/null 2>&1 ; then
                   echo "无法验证SDK！"
                 else
                   file "${CACHE_PATH}/${SDK_FILE}"
-                  tar -I zstd -xf "${CACHE_PATH}/${SDK_FILE}" -C "${CACHE_SDK_PATH}" --strip=1
+                  tar -I zstd -xf "/tmp/${SDK_FILE}" -C "${CACHE_SDK_PATH}" --strip=1
                   # find "${{ env.CACHE_SDK_PATH }}" -type l -name "*-linux-g++" -exec echo {} \;
                   # echo "CXX=$(find "${{ env.CACHE_SDK_PATH }}" -type l -name "*-linux-g++")" >> $GITHUB_ENV
                   # find "${{ env.CACHE_SDK_PATH }}" -type l -name "*-linux-gcc" -exec echo {} \;
