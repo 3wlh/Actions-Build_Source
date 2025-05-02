@@ -125,6 +125,7 @@ jobs:
             else
               SDK_FILE="$(cat sha256sums.small | cut -d' ' -f2 | sed 's/*//g')"
               if ! sha256sum -c ./sha256sums.small >/dev/null 2>&1 ; then
+                echo "Download ${Download_URL}/${SDK_URL_PATH}/${SDK_FILE}"
                 wget -qO "${SDK_FILE}" "${Download_URL}/${SDK_URL_PATH}/${SDK_FILE}" # --show-progress
                 if ！sha256sum -c ./sha256sums.small >/dev/null 2>&1 ; then
                   echo "无法验证SDK！"
