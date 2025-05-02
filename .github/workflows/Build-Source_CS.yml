@@ -15,7 +15,7 @@ on:
         description: |
           选择 OpenWrt 版本
         required: false
-        default: "23.05.5"
+        default: "24.10.0"
         type: choice
         options:
           - 23.05.5
