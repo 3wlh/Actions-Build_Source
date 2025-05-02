@@ -99,16 +99,15 @@ jobs:
       
       - name: Create Directories
         run: |
-          CACHE_SDK_PATH="$(eval echo "$CACHE_PATH/sdk")"
-          CACHE_DL_PATH="$(eval echo "$CACHE_PATH/dl")"
-          CACHE_FEEDS_PATH="$(eval echo "$CACHE_PATH/feeds")"
+          CACHE_SDK_PATH="$(eval echo "${{ env.CACHE_PATH }}/sdk")"
+          CACHE_DL_PATH="$(eval echo "${{ env.CACHE_PATH }}/dl")"
+          CACHE_FEEDS_PATH="$(eval echo "${{ env.CACHE_PATH }}/feeds")"
           echo "缓存SDK目录: $CACHE_SDK_PATH"
           echo "缓存DL目录: $CACHE_DL_PATH"
           echo "缓存FEEDS目录: $CACHE_FEEDS_PATH"
           test -d "$CACHE_SDK_PATH" || mkdir -p "$CACHE_SDK_PATH"
           test -d "$CACHE_FEEDS_PATH" || mkdir -p "$CACHE_FEEDS_PATH"
           test -d "${{ env.Build_PATH }}" || mkdir -p "${{ env.Build_PATH }}"
-          test -d "${{ env.CACHE_PATH }}" && chmod 777 ${{ env.CACHE_PATH }}
           echo "CACHE_SDK_PATH=$CACHE_SDK_PATH" >> $GITHUB_ENV
           echo "CACHE_DL_PATH=$CACHE_DL_PATH" >> $GITHUB_ENV
           echo "CACHE_FEEDS_PATH=$CACHE_FEEDS_PATH" >> $GITHUB_ENV
