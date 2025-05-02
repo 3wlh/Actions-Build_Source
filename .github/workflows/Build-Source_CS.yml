@@ -200,7 +200,7 @@ jobs:
           path: ${{ env.Build_PATH }} 
 
       - name: Upload to Release
-        if: steps.images.outputs.source == 'success'
+        if: steps.build.outputs.source == 'success'
         uses: softprops/action-gh-release@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
