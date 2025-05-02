@@ -130,7 +130,7 @@ jobs:
                   echo "无法验证SDK！"
                 else
                   file "${CACHE_PATH}/${SDK_FILE}"
-                  tar -I zstd -xf "${SDK_FILE}" -C "${CACHE_SDK_PATH}" --strip=1
+                  tar -I zstd -xvf "${CACHE_PATH}/${SDK_FILE}" -C "${CACHE_SDK_PATH}" --strip=1
                   rm -rf ${SDK_FILE}
                   # find "${{ env.CACHE_SDK_PATH }}" -type l -name "*-linux-g++" -exec echo {} \;
                   # echo "CXX=$(find "${{ env.CACHE_SDK_PATH }}" -type l -name "*-linux-g++")" >> $GITHUB_ENV
