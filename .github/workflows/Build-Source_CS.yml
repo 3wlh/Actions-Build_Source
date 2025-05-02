@@ -151,7 +151,7 @@ jobs:
 
       - name: Download and Source
         id: source
-        if: steps.images.outputs.toolchain == 'success'
+        if: steps.toolchain.outputs.status == 'success'
         env:
           OPENWRT_GOLANG_COMMIT: ${{ secrets.OPENWRT_GOLANG_COMMIT }}
         run: |
@@ -166,7 +166,7 @@ jobs:
         
       - name: Build and Source
         id: build
-        if: steps.images.outputs.source == 'success'
+        if: steps.source.outputs.source == 'success'
         run: |
           source /etc/profile
           cd "${{ env.SOURCE_PATH }}/${{ env.SOURCE }}"
