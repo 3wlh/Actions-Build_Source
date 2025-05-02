@@ -99,9 +99,9 @@ jobs:
       
       - name: Create Directories
         run: |
-          CACHE_SDK_PATH="$(eval echo "${{ env.CACHE_PATH }}/sdk")"
-          CACHE_DL_PATH="$(eval echo "${{ env.CACHE_PATH }}/dl")"
-          CACHE_FEEDS_PATH="$(eval echo "${{ env.CACHE_PATH }}/feeds")"
+          CACHE_SDK_PATH="$(eval echo "${CACHE_PATH}/sdk")"
+          CACHE_DL_PATH="$(eval echo "${CACHE_PATH}/dl")"
+          CACHE_FEEDS_PATH="$(eval echo "${CACHE_PATH}/feeds")"
           echo "缓存SDK目录: $CACHE_SDK_PATH"
           echo "缓存DL目录: $CACHE_DL_PATH"
           echo "缓存FEEDS目录: $CACHE_FEEDS_PATH"
@@ -129,7 +129,8 @@ jobs:
                 if ! sha256sum -c ./sha256sums.small >/dev/null 2>&1 ; then
                   echo "无法验证SDK！"
                 else
-                  tar -I zstd -xf "${SDK_FILE}" -C "${{ env.CACHE_SDK_PATH }}" --strip=1
+                  file "${CACHE_PATH}/${SDK_FILE}"
+                  tar -I zstd -xf "${CACHE_PATH}/${SDK_FILE}" -C "${CACHE_SDK_PATH}" --strip=1
                   # find "${{ env.CACHE_SDK_PATH }}" -type l -name "*-linux-g++" -exec echo {} \;
                   # echo "CXX=$(find "${{ env.CACHE_SDK_PATH }}" -type l -name "*-linux-g++")" >> $GITHUB_ENV
                   # find "${{ env.CACHE_SDK_PATH }}" -type l -name "*-linux-gcc" -exec echo {} \;
