@@ -120,7 +120,7 @@ jobs:
           if [[ $(du -s "${{ env.CACHE_PATH }}" | awk '{ print $1}') -ge 6350 ]]; then
             echo "status=success" >> $GITHUB_OUTPUT
           else if [[ $(curl -s -o /dev/null -w "%{http_code}" -X GET ${Download_URL}/${SDK_URL_PATH}) -lt 400 ]]; then
-            if ! ( wget -q -O - "${Download_URL}/${SDK_URL_PATH}/sha256sums" | grep -- "${{ env.SDK_NAME }}" > sha256sums.small 2>/dev/null ) ; then
+            if ! ( wget -qO- "${Download_URL}/${SDK_URL_PATH}/sha256sums" | grep -- "${{ env.SDK_NAME }}" > sha256sums.small 2>/dev/null ) ; then
               echo "在sha256sums中找不到${{ env.SDK_NAME }}文件"
             else
               SDK_FILE="$(cat sha256sums.small | cut -d' ' -f2 | sed 's/*//g')"
