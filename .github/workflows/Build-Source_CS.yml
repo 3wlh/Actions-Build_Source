@@ -107,7 +107,7 @@ jobs:
           echo "缓存FEEDS目录: $CACHE_FEEDS_PATH"
           test -d "$CACHE_SDK_PATH" || mkdir -p "$CACHE_SDK_PATH"
           test -d "$CACHE_FEEDS_PATH" || mkdir -p "$CACHE_FEEDS_PATH"
-          test -d "${{ env.BIN_PATH }}" || mkdir -p "${{ env.BIN_PATH }}"
+          test -d "${{ env.Build_PATH }}" || mkdir -p "${{ env.Build_PATH }}"
           echo "CACHE_SDK_PATH=$CACHE_SDK_PATH" >> $GITHUB_ENV
           echo "CACHE_DL_PATH=$CACHE_DL_PATH" >> $GITHUB_ENV
           echo "CACHE_FEEDS_PATH=$CACHE_FEEDS_PATH" >> $GITHUB_ENV
@@ -171,10 +171,10 @@ jobs:
           CPP=$(find . -type f -name "*.cpp" -exec basename {} \;)
           echo ${CPP}
           if [ -n "$CPP" ]; then
-            # ${{ env.CXX }} -fsigned-char ${CPP} -o ${{ env.Build_DIR }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }}
+            # ${{ env.CXX }} -fsigned-char ${CPP} -o ${{ env.Build_PATH }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }}
             # 优化大小
             ${{ env.CXX }} -Os ${CPP} -o ${{ env.Build_PATH }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }}
-            # ${{ env.CXX }} ${CPP} -o ${{ env.Build_DIR }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }}
+            # ${{ env.CXX }} ${CPP} -o ${{ env.Build_PATH }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }}
           else
             C=$(find . -type f -name "*.c" -exec basename {} \;)
             echo ${C}
@@ -195,7 +195,7 @@ jobs:
         if: steps.images.outputs.source == 'success' && ${{env.UPLOAD_BIN_DIR}} == 'true'
         with:
           name: ${{ env.PACKAGE_NAME }}-${{ matrix.arch }}_${{ env.Time }}
-          path: ${{ env.Build_DIR }} 
+          path: ${{ env.Build_PATH }} 
 
       - name: Upload to Release
         if: steps.images.outputs.source == 'success'
@@ -205,7 +205,7 @@ jobs:
         with:
           tag_name: ${{ env.Time }}
           body_path: info.md
-          files: ${{ env.Build_DIR }}/*
+          files: ${{ env.Build_PATH }}/*
 
       - name: SSH connection to Actions
         if: (inputs.ssh == true) || contains(github.event.action, 'ssh')
