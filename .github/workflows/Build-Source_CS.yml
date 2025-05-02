@@ -133,21 +133,21 @@ jobs:
                   file "${CACHE_PATH}/${SDK_FILE}"
                   tar -I zstd -xvf "${CACHE_PATH}/${SDK_FILE}" -C "${CACHE_SDK_PATH}" --strip=1
                   rm -rf ${SDK_FILE}
-                  # find "${{ env.CACHE_SDK_PATH }}" -type l -name "*-linux-g++" -exec echo {} \;
-                  # echo "CXX=$(find "${{ env.CACHE_SDK_PATH }}" -type l -name "*-linux-g++")" >> $GITHUB_ENV
-                  # find "${{ env.CACHE_SDK_PATH }}" -type l -name "*-linux-gcc" -exec echo {} \;
-                  echo "CC=$(find "${{ env.CACHE_SDK_PATH }}" -type l -name "*-linux-gcc" | xargs -i basename {})" >> $GITHUB_ENV
-                  echo "CXX=$(find "${{ env.CACHE_SDK_PATH }}" -type l -name "*-linux-g++" | xargs -i basename {})" >> $GITHUB_ENV
-                  BIN=$(find "${{ env.CACHE_SDK_PATH }}" -type l -name "*-linux-g++" -exec readlink -f {} \; | xargs -i dirname {})
-                  sudo sed -i '$a\PATH=$PATH:'"${BIN}" /etc/profile
-                  sudo sed -i '$a\STAGING_DIR='"${BIN}" /etc/profile
-                  sudo sed -i '$a\export STAGING_DIR' /etc/profile
                   echo "status=success" >> $GITHUB_OUTPUT
                 fi
               fi   
             fi  
             fi
-          fi  
+          fi
+          # find "${{ env.CACHE_SDK_PATH }}" -type l -name "*-linux-g++" -exec echo {} \;
+          # echo "CXX=$(find "${{ env.CACHE_SDK_PATH }}" -type l -name "*-linux-g++")" >> $GITHUB_ENV
+          # find "${{ env.CACHE_SDK_PATH }}" -type l -name "*-linux-gcc" -exec echo {} \;
+          echo "CC=$(find "${{ env.CACHE_SDK_PATH }}" -type l -name "*-linux-gcc" | xargs -i basename {})" >> $GITHUB_ENV
+          echo "CXX=$(find "${{ env.CACHE_SDK_PATH }}" -type l -name "*-linux-g++" | xargs -i basename {})" >> $GITHUB_ENV
+          BIN=$(find "${{ env.CACHE_SDK_PATH }}" -type l -name "*-linux-g++" -exec readlink -f {} \; | xargs -i dirname {})
+          sudo sed -i '$a\PATH=$PATH:'"${BIN}" /etc/profile
+          sudo sed -i '$a\STAGING_DIR='"${BIN}" /etc/profile
+          sudo sed -i '$a\export STAGING_DIR' /etc/profile
           cd -
 
       - name: Download and Source
