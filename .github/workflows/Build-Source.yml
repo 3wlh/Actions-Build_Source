@@ -28,6 +28,7 @@ on:
           - wxpusher
           - openssl.cgi
           - v2ray.cgi
+          - page.cgi
           - sub.cgi
           - netlink
       ssh:
