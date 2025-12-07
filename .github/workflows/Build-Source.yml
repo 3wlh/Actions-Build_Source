@@ -207,7 +207,7 @@ jobs:
         if: steps.images.outputs.status == 'success'
         uses: dev-drprasad/delete-tag-and-release@v1.1
         with:
-          tag_name: GitHub-Actions_${{ inputs.image }}-${{ env.profile }}
+          tag_name: ${{ env.PACKAGE_NAME }}
           delete_release: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
