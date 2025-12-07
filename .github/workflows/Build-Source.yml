@@ -58,6 +58,13 @@ jobs:
         run: |
           sudo timedatectl set-timezone "${TZ}"
           echo "time=$(date "+%Y.%m.%d_%H%M%S")" >> $GITHUB_OUTPUT
+             
+      - name: Delete GitHub Release
+        uses: dev-drprasad/delete-tag-and-release@v1.1
+        with:
+          tag_name: ${{ env.PACKAGE_NAME }}
+          delete_release: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
   jod_release:
     name: Build for ${{ matrix.arch }}
@@ -202,14 +209,6 @@ jobs:
         with:
           name: ${{ env.PACKAGE_NAME }}-${{ matrix.arch }}_${{ env.Time }}
           path: ${{ env.Build_PATH }} 
-
-      - name: Delete GitHub Release
-        if: steps.build.outputs.status == 'success'
-        uses: dev-drprasad/delete-tag-and-release@v1.1
-        with:
-          tag_name: ${{ env.PACKAGE_NAME }}
-          delete_release: true
-          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload to Release
         if: steps.build.outputs.status == 'success'
