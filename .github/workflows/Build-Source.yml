@@ -204,7 +204,7 @@ jobs:
           path: ${{ env.Build_PATH }} 
 
       - name: Delete GitHub Release
-        if: steps.images.outputs.status == 'success'
+        if: steps.build.outputs.status == 'success'
         uses: dev-drprasad/delete-tag-and-release@v1.1
         with:
           tag_name: ${{ env.PACKAGE_NAME }}
