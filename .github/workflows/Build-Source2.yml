@@ -232,11 +232,6 @@ jobs:
           tar -zcvf ${{ env.PACKAGE_NAME }}.tar.gz ${{ env.PACKAGE_NAME }}
           test -f "${{ env.PACKAGE_NAME }}.tar.gz" && echo "status=success" >> $GITHUB_OUTPUT
           cp -f ${{ env.PACKAGE_NAME }}.tar.gz ${{ env.PACKAGE_NAME }}/
-          #cd ${{ env.PACKAGE_NAME }}
-          #for file in *.tar.gz; do
-            #sha256sum "$file" > "$file.sha256"
-            #sha256sum -c "$file.sha256"
-          #done
           
       - name: Create Edit info
         run: |
