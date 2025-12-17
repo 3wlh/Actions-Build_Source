@@ -247,7 +247,7 @@ jobs:
         with:
           tag_name: ${{ env.PACKAGE_NAME }}
           body_path: info.md
-          files: *.tar.gz
+          files: ${{ env.PACKAGE_NAME }}.tar.gz
 
       - name: SSH connection to Actions
         if: (inputs.ssh == true) || contains(github.event.action, 'ssh')
