@@ -238,8 +238,6 @@ jobs:
             sha256sum -c "$file.sha256"
           done
           
-          
-          
       - name: Create Edit info
         run: |
           echo "## 编译时间：\`${{ env.Time }}\`" > info.md
