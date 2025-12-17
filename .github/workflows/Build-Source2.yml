@@ -206,6 +206,7 @@ jobs:
   jod_release:
     name: Build for ${{ matrix.arch }}
     needs: jod_initial
+    needs: jod_compile
     runs-on: ubuntu-latest
     env:
       Time: ${{ needs.initial.outputs.time }}
