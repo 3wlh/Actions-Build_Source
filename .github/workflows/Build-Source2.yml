@@ -231,6 +231,14 @@ jobs:
         run: |
           tar -zcvf ${{ env.PACKAGE_NAME }}.tar.gz ${{ env.PACKAGE_NAME }}
           test -f "${{ env.PACKAGE_NAME }}.tar.gz" && echo "status=success" >> $GITHUB_OUTPUT
+          cp -f ${{ env.PACKAGE_NAME }}.tar.gz ${{ env.PACKAGE_NAME }}/
+          cd ${{ env.PACKAGE_NAME }}
+          for file in *.tar.gz; do
+            sha256sum "$file" > "$file.sha256"
+            sha256sum -c "$file.sha256"
+          done
+          
+          
           
       - name: Create Edit info
         run: |
@@ -247,7 +255,7 @@ jobs:
         with:
           tag_name: ${{ env.PACKAGE_NAME }}
           body_path: info.md
-          files: ${{ env.PACKAGE_NAME }}.tar.gz
+          files: ${{ env.PACKAGE_NAME }}/*
 
       - name: SSH connection to Actions
         if: (inputs.ssh == true) || contains(github.event.action, 'ssh')
