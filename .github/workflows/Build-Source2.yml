@@ -230,7 +230,7 @@ jobs:
         id: pack
         run: |
           tar -zcvf ${{ env.PACKAGE_NAME }}.tar.gz ${{ env.PACKAGE_NAME }}
-          echo "status=success" >> $GITHUB_OUTPUT
+          test -f "${{ env.PACKAGE_NAME }}.tar.gz" || echo "status=success" >> $GITHUB_OUTPUT
           
       - name: Create Edit info
         run: |
