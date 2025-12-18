@@ -229,7 +229,8 @@ jobs:
       - name: Package directory
         id: pack
         run: |
-          tar -zcvf ${{ env.PACKAGE_NAME }}.tar.gz ${{ env.PACKAGE_NAME }}
+          cd ${{ env.PACKAGE_NAME }}
+          tar -zcvf ${{ env.PACKAGE_NAME }}.tar.gz *
           test -f "${{ env.PACKAGE_NAME }}.tar.gz" && echo "status=success" >> $GITHUB_OUTPUT
           cp -f ${{ env.PACKAGE_NAME }}.tar.gz ${{ env.PACKAGE_NAME }}/
           
