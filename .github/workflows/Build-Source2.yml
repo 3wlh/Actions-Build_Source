@@ -232,7 +232,7 @@ jobs:
           cd ${{ env.PACKAGE_NAME }}
           tar -zcvf ${{ env.PACKAGE_NAME }}.tar.gz *
           test -f "${{ env.PACKAGE_NAME }}.tar.gz" && echo "status=success" >> $GITHUB_OUTPUT
-          cp -f ${{ env.PACKAGE_NAME }}.tar.gz ${{ env.PACKAGE_NAME }}/
+          # cp -f ${{ env.PACKAGE_NAME }}.tar.gz ${{ env.PACKAGE_NAME }}/
           
       - name: Create Edit info
         run: |
