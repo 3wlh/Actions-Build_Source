@@ -48,18 +48,10 @@ jobs:
   jod_initial:
     name: Acquisition initial
     runs-on: ubuntu-latest
-    outputs:
-      time: ${{steps.output_time.outputs.time}}
     steps: 
       - name: Checkout
         uses: actions/checkout@main
-      
-      - name: output Time
-        id: output_time
-        run: |
-          sudo timedatectl set-timezone "${TZ}"
-          echo "time=$(date "+%Y.%m.%d_%H%M%S")" >> $GITHUB_OUTPUT
-             
+        
       - name: Delete GitHub Release
         uses: dev-drprasad/delete-tag-and-release@v1.1
         with:
@@ -236,7 +228,8 @@ jobs:
           
       - name: Create Edit info
         run: |
-          echo "## 编译时间：\`${{ env.Time }}\`" > info.md
+          sudo timedatectl set-timezone "${TZ}"
+          echo "## 编译时间：\`$(date "+%Y.%m.%d_%H%M%S")\`" > info.md
           echo "## [![Github](https://img.shields.io/badge/Release文件可在国内加速站下载-FC7C0D?logo=github&logoColor=fff&labelColor=000&style=for-the-badge)](https://ghproxy.net/)" >> info.md
           echo "## 软件信息：" >> info.md
           echo "* SDK版本 \`${{ inputs.version }}\`" >> info.md
