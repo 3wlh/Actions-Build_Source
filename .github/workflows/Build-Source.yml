@@ -128,6 +128,8 @@ jobs:
           find . -type l -name "*-linux-g++" -exec bash -c 'mv "$0" "$(dirname $0)/g++"' {} \;
           ls ${BIN}
           sudo sed -i '$a\export PATH=$PATH:'"${BIN}" /etc/profile
+          source /etc/profile
+          echo ${PATH}
           echo "status=success" >> $GITHUB_OUTPUT
           cd -
 
@@ -149,6 +151,7 @@ jobs:
         if: steps.source.outputs.status == 'success'
         run: |
           source /etc/profile
+          echo ${PATH}
           echo -e "\e[1;32m "$(g++  --version | head -n 1)" \e[0m"
           echo -e "\e[1;32m "$(gcc --version | head -n 1)" \e[0m"
           cd "${{ env.SOURCE_PATH }}/${{ env.SOURCE }}"
