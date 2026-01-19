@@ -98,7 +98,6 @@ jobs:
       
       - name: Install Dependencies
         run: |
-          sudo apt purge -y gcc
           # DEBIAN_FRONTEND=noninteractive sudo apt-get install -y ccache gettext libncurses5-dev xsltproc
           #sudo apt-get remove gcc g++
       
@@ -124,11 +123,10 @@ jobs:
             [[ -n "Status" ]] || exec
             ls
           fi
-          cd -
-          find "${{ env.PATH_CACHE }}" -type l -name "*-linux-g++*" -exec sudo ln -sf {} /bin/g++ \;
-          find "${{ env.PATH_CACHE }}" -type l -name "*-linux-gcc*" -exec sudo ln -sf {} /bin/gcc \;
+          echo "c=$(find . -type l -name "*-linux-gcc" | xargs -i basename {})" >> $GITHUB_ENV
+          echo "cpp=$(find . -type l -name "*-linux-g++" | xargs -i basename {})" >> $GITHUB_ENV
           echo "status=success" >> $GITHUB_OUTPUT
-          ls /bin
+          cd -
 
       - name: Download and Source
         id: source
@@ -149,19 +147,19 @@ jobs:
         id: build
         if: steps.source.outputs.status == 'success'
         run: |
-          echo -e "\e[1;32m "$(g++ --version | head -n 1)" \e[0m"
-          echo -e "\e[1;32m "$(gcc --version | head -n 1)" \e[0m"
+          echo -e "\e[1;32m "$({{ env.c }}  --version | head -n 1)" \e[0m"
+          echo -e "\e[1;32m "$({{ env.cpp }} --version | head -n 1)" \e[0m"
           cd "${{ env.SOURCE_PATH }}/${{ env.SOURCE }}"
           SOURCE=$(find . -type f -name "*.cpp" -exec basename {} \;)
           if [ -n "${SOURCE}" ]; then
             echo ${SOURCE}
             # ${{ env.CXX }} -fsigned-char ${CPP} -o ${{ env.Build_PATH }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }}
             # 优化大小
-            g++ ${SOURCE} -o ${{ env.Build_PATH }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }} -std=c++11 -Os -s -static 
+            $({{ env.cpp }} ${SOURCE} -o ${{ env.Build_PATH }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }} -std=c++11 -Os -s -static 
           else
             SOURCE=$(find . -type f -name "*.c" -exec basename {} \;)
             echo ${SOURCE}
-            gcc -Os ${SOURCE} -o ${{ env.Build_PATH }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }}  
+            {{ env.c }} -Os ${SOURCE} -o ${{ env.Build_PATH }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }}  
           fi
           echo "status=success" >> $GITHUB_OUTPUT
           cd -
