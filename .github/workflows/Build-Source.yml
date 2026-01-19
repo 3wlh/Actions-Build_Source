@@ -124,8 +124,8 @@ jobs:
             [[ -n "Status" ]] || exec
           fi
           BIN="$(find ${{ env.PATH_CACHE }} -type l -name "*-linux-gcc" -print0 | xargs -0 dirname)"
-          find  ${{ env.PATH_CACHE }} -type f -name "*-linux-gcc。bin" -exec bash -c 'ln -sf "$0" "$(dirname $0)/gcc"' {} \;
-          find  ${{ env.PATH_CACHE }} -type f -name "*-linux-g++.bin" -exec bash -c 'ln -sf "$0" "$(dirname $0)/g++"' {} \;
+          find  ${{ env.PATH_CACHE }} -type f -name "*-linux-gcc.bin" -exec sudo bash -c 'ln -sf "$0" "$(dirname $0)/gcc"' {} \;
+          find  ${{ env.PATH_CACHE }} -type f -name "*-linux-g++.bin" -exec sudo bash -c 'ln -sf "$0" "$(dirname $0)/g++"' {} \;
           ls -l ${BIN} | grep ^l
           sudo sed -i '$a\export PATH=$PATH:'"${BIN}" /etc/profile
           echo "status=success" >> $GITHUB_OUTPUT
