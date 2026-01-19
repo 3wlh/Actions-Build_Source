@@ -4,8 +4,6 @@ on:
   repository_dispatch:
   workflow_dispatch:
     inputs:
-      
-      
       version:
         description: |
           选择 OpenWrt 版本
@@ -26,6 +24,7 @@ on:
           - all
           - api
           - wxpusher
+          - sub
           - openssl.cgi
           - v2ray.cgi
           - page.cgi
@@ -39,10 +38,10 @@ on:
         type: boolean
 
 env:
-  CACHE_PATH: /tmp/.cache
   PACKAGE_NAME: ${{ inputs.source_name }}
   SOURCE: OpenWrt/${{ inputs.Source_name }}/
   Download_URL: https://downloads.openwrt.org/releases/${{ inputs.Version }}/targets
+  PATH_CACHE: /tmp/.cache
   TZ: Asia/Shanghai
   UPLOAD_BIN_DIR: true
 
@@ -58,7 +57,7 @@ jobs:
         run: |
           sudo timedatectl set-timezone "${TZ}"
           echo "time=$(date "+%Y.%m.%d_%H%M%S")" >> $GITHUB_OUTPUT
-             
+          
       - name: Delete GitHub Release
         uses: dev-drprasad/delete-tag-and-release@v1.1
         with:
@@ -94,75 +93,50 @@ jobs:
       - name: Setup Cache
         uses: actions/cache@main
         with:
-          path: |
-            ${{ env.CACHE_PATH }}
-          key: ${{ matrix.arch }}-${{ env.version }}Cache
-          restore-keys: |
-            ${{ env.CACHE_PATH }}/sdk
-            ${{ env.CACHE_PATH }}/dl
-            ${{ env.CACHE_PATH }}/feeds
+          path: ${{ env.PATH_CACHE }}
+          key: ${{ matrix.arch }}-${{ inputs.Source_name }}
       
       - name: Install Dependencies
         run: |
           # DEBIAN_FRONTEND=noninteractive sudo apt-get install -y ccache gettext libncurses5-dev xsltproc
           #sudo apt-get remove gcc g++
       
-      - name: Create Directories
+      - name: Set executable permissions
         run: |
-          CACHE_SDK_PATH="$(eval echo "${CACHE_PATH}/sdk")"
-          CACHE_DL_PATH="$(eval echo "${CACHE_PATH}/dl")"
-          CACHE_FEEDS_PATH="$(eval echo "${CACHE_PATH}/feeds")"
-          echo "缓存SDK目录: $CACHE_SDK_PATH"
-          echo "缓存DL目录: $CACHE_DL_PATH"
-          echo "缓存FEEDS目录: $CACHE_FEEDS_PATH"
-          test -d "$CACHE_SDK_PATH" || mkdir -p "$CACHE_SDK_PATH"
-          test -d "$CACHE_FEEDS_PATH" || mkdir -p "$CACHE_FEEDS_PATH"
-          test -d "${{ env.Build_PATH }}" || mkdir -p "${{ env.Build_PATH }}"
-          echo "CACHE_SDK_PATH=$CACHE_SDK_PATH" >> $GITHUB_ENV
-          echo "CACHE_DL_PATH=$CACHE_DL_PATH" >> $GITHUB_ENV
-          echo "CACHE_FEEDS_PATH=$CACHE_FEEDS_PATH" >> $GITHUB_ENV
+          chmod -R +x ${{ github.workspace }}/.github/.sh/
+          for file in "${{ github.workspace }}/.github/.sh/";do
+            if [[ -f ${file} ]];then
+              name=$(basename ${file} .sh)
+              ln -s ${file} /bin/${name}
+              echo "$(date '+%Y-%m-%d %H:%M:%S') - ${name} 创建OK."
+            fi
+      
+      - name: Configure environment variables
+        run: |
+
+          test -d "${{ env.PATH_CACHE }}" || mkdir -p "${{ env.PATH_CACHE }}"
           echo "SOURCE_PATH=$(mktemp -d)" >> $GITHUB_ENV
           
       - name: Download and Unzip ToolChain
-        id: toolchain
+        id: sdk
         run: |
-          cd "${{ env.CACHE_PATH }}"
-          if [[ $(du -s "${{ env.CACHE_PATH }}" | awk '{ print $1}') -ge 6350 ]]; then
-            echo "使用缓存文件" && echo "status=success" >> $GITHUB_OUTPUT
-          else if [[ $(curl -s -o /dev/null -w "%{http_code}" -X GET ${Download_URL}/${SDK_URL_PATH}) -lt 400 ]]; then
-            if ! ( wget -qO- "${Download_URL}/${SDK_URL_PATH}/sha256sums" | grep -- "${{ env.SDK_NAME }}" > sha256sums.small 2>/dev/null ) ; then
-              echo "在sha256sums中找不到${{ env.SDK_NAME }}文件"
-            else
-              SDK_FILE="$(cat sha256sums.small | cut -d' ' -f2 | sed 's/*//g')"
-              if ! sha256sum -c ./sha256sums.small >/dev/null 2>&1 ; then
-                echo "Download ${Download_URL}/${SDK_URL_PATH}/${SDK_FILE}"
-                wget -qO "${SDK_FILE}" "${Download_URL}/${SDK_URL_PATH}/${SDK_FILE}" # --show-progress
-                if ！sha256sum -c ./sha256sums.small >/dev/null 2>&1 ; then
-                  echo "无法验证SDK！"
-                else
-                  file "${CACHE_PATH}/${SDK_FILE}"
-                  tar -I zstd -xf "${CACHE_PATH}/${SDK_FILE}" -C "${CACHE_SDK_PATH}" --strip=1
-                  rm -rf ${SDK_FILE}
-                  echo "status=success" >> $GITHUB_OUTPUT
-                fi
-              fi   
-            fi  
-            fi
+          cd "${{ env.PATH_CACHE }}"
+          if [[ $(du -s "${{ env.PATH_CACHE }}" | awk '{ print $1}') -lt 10240 ]]; then
+            echo -e "\e[1;32m Start downloading the SDK \e[0m"
+            Status="$(Download_sdk ${Download_URL} ${SDK_URL_PATH})"
+            [[ -n "Status" ]] || exec
+            tar -I zstd -xf "*.tar.zst" -C "${{ env.PATH_CACHE }}" --strip=1
+            rm -rf *.tar.zst
+            ls
           fi
-          # find "${{ env.CACHE_SDK_PATH }}" -type l -name "*-linux-g++" -exec echo {} \;
-          # echo "CXX=$(find "${{ env.CACHE_SDK_PATH }}" -type l -name "*-linux-g++")" >> $GITHUB_ENV
-          # find "${{ env.CACHE_SDK_PATH }}" -type l -name "*-linux-gcc" -exec echo {} \;
-          echo "CC=$(find "${{ env.CACHE_SDK_PATH }}" -type l -name "*-linux-gcc" | xargs -i basename {})" >> $GITHUB_ENV
-          echo "CXX=$(find "${{ env.CACHE_SDK_PATH }}" -type l -name "*-linux-g++" | xargs -i basename {})" >> $GITHUB_ENV
-          BIN=$(find "${{ env.CACHE_SDK_PATH }}" -type l -name "*-linux-g++" -exec readlink -f {} \; | xargs -i dirname {})
-          sudo sed -i '$a\PATH=$PATH:'"${BIN}" /etc/profile
-          sudo sed -i '$a\STAGING_DIR='"${BIN}" /etc/profile
-          sudo sed -i '$a\export STAGING_DIR' /etc/profile
+          find . -type l -name "*-linux-g++*" -exec ls -l {} /bin/g++ \;
+          find . -type l -name "*-linux-gcc*" -exec ls -l {} /bin/gcc \;
+          echo "status=success" >> $GITHUB_OUTPUT
           cd -
 
       - name: Download and Source
         id: source
-        if: steps.toolchain.outputs.status == 'success'
+        if: steps.sdk.outputs.status == 'success'
         env:
           OPENWRT_GOLANG_COMMIT: ${{ secrets.OPENWRT_GOLANG_COMMIT }}
         run: |
@@ -179,19 +153,20 @@ jobs:
         id: build
         if: steps.source.outputs.status == 'success'
         run: |
-          source /etc/profile
+          echo -e "\e[1;32m "$(g++ --version | head -n 1)" \e[0m"
+          echo -e "\e[1;32m "$(gcc --version | head -n 1)" \e[0m"
           cd "${{ env.SOURCE_PATH }}/${{ env.SOURCE }}"
-          CPP=$(find . -type f -name "*.cpp" -exec basename {} \;)
+          SOURCE=$(find . -type f -name "*.cpp" -exec basename {} \;)
           echo ${CPP}
-          if [ -n "$CPP" ]; then
+          if [ -n "${SOURCE}" ]; then
+            echo ${SOURCE}
             # ${{ env.CXX }} -fsigned-char ${CPP} -o ${{ env.Build_PATH }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }}
             # 优化大小
-            ${{ env.CXX }} -Os ${CPP} -o ${{ env.Build_PATH }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }}
-            # ${{ env.CXX }} ${CPP} -o ${{ env.Build_PATH }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }}
+            g++ -Os ${CPP} -o ${{ env.Build_PATH }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }}
           else
-            C=$(find . -type f -name "*.c" -exec basename {} \;)
-            echo ${C}
-            ${{ env.CC }} -Os ${C} -o ${{ env.Build_PATH }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }}  
+            SOURCE=$(find . -type f -name "*.c" -exec basename {} \;)
+            echo ${SOURCE}
+            gcc -Os ${C} -o ${{ env.Build_PATH }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }}  
           fi
           echo "status=success" >> $GITHUB_OUTPUT
           cd -
