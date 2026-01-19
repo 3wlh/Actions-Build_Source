@@ -120,8 +120,6 @@ jobs:
             echo -e "\e[1;32m Start downloading the SDK \e[0m"
             Status="$(Download_sdk.sh ${Download_URL} ${SDK_URL_PATH})"
             [[ -n "Status" ]] || exec
-            tar -I zstd -xf "*.tar.zst" -C "${{ env.PATH_CACHE }}" --strip=1
-            rm -rf *.tar.zst
             ls
           fi
           find . -type l -name "*-linux-g++*" -exec ls -l {} /bin/g++ \;

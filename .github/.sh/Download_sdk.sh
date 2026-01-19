@@ -34,6 +34,8 @@ function mian() {
 	shasum="$(get_sha256sums ${Text})"
 	[[ -z "${shasum}" ]] && exit
 	get_download "${Download_URL}" "${filename}" "${shasum}"
+	tar -I zstd -xf "${filename}" -C "." --strip=1
+	rm -rf ${filename}
 	echo "success"
 }
 mian
