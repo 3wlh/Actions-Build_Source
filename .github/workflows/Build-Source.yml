@@ -161,7 +161,7 @@ jobs:
           else
             SOURCE=$(find . -type f -name "*.c" -exec basename {} \;)
             echo ${SOURCE}
-            ${{ env. }} ${SOURCE} -o ${{ env.Build_PATH }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }} -Os 
+            ${{ env.c }} ${SOURCE} -o ${{ env.Build_PATH }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }} -Os 
           fi
           echo "status=success" >> $GITHUB_OUTPUT
           cd -
