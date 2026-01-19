@@ -20,7 +20,7 @@ function get_sha256sums() {
 }
 
 function get_download() {
-	#wget -qO "${1}/${2}" "${2}" # --show-progress
+	wget -qO "${1}/${2}" "${2}" # --show-progress
 	actual_sha256="$(sha256sum "${2}" | awk '{print $1}')"
 	[[ "${actual_sha256}" == "${3}" ]] || exit
 }
