@@ -124,8 +124,8 @@ jobs:
             [[ -n "Status" ]] || exec
             ls
           fi
-          sudo find . -type l -name "*-linux-g++*" -exec ls -l {} /bin/g++ \;
-          sudo find . -type l -name "*-linux-gcc*" -exec ls -l {} /bin/gcc \;
+          sudo find . -type l -name "*-linux-g++*" -exec ln -sf {} /bin/g++ \;
+          sudo find . -type l -name "*-linux-gcc*" -exec ln -sf {} /bin/gcc \;
           echo "status=success" >> $GITHUB_OUTPUT
           cd -
 
