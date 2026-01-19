@@ -124,9 +124,8 @@ jobs:
             [[ -n "Status" ]] || exec
           fi
           BIN="$(find ${{ env.PATH_CACHE }} -type l -name "*-linux-gcc" -print0 | xargs -0 dirname)"
-          find  ${{ env.PATH_CACHE }} -type f -name "*-linux-gcc" -exec sudo bash -c 'ln -sf "$0" "$(dirname $0)/gcc"' {} \;
-          find  ${{ env.PATH_CACHE }} -type f -name "*-linux-g++" -exec sudo bash -c 'ln -sf "$0" "$(dirname $0)/g++"' {} \;
-          ls -l ${BIN} | grep ^l
+          echo "cpp=$(find . -type l -name "*-linux-g++" | xargs -i basename {})" >> $GITHUB_ENV
+          echo "c=$(find . -type l -name "*-linux-gcc" | xargs -i basename {})" >> $GITHUB_ENV
           sudo sed -i '$a\export PATH=$PATH:'"${BIN}" /etc/profile
           echo "status=success" >> $GITHUB_OUTPUT
           cd -
@@ -150,19 +149,19 @@ jobs:
         run: |
           source /etc/profile
           echo ${PATH}
-          echo -e "\e[1;32m "$(g++  --version | head -n 1)" \e[0m"
-          echo -e "\e[1;32m "$(gcc --version | head -n 1)" \e[0m"
+          echo -e "\e[1;32m "$(${{ env.cpp }}  --version | head -n 1)" \e[0m"
+          echo -e "\e[1;32m "$(${{ env.c }} --version | head -n 1)" \e[0m"
           cd "${{ env.SOURCE_PATH }}/${{ env.SOURCE }}"
           SOURCE=$(find . -type f -name "*.cpp" -exec basename {} \;)
           if [ -n "${SOURCE}" ]; then
             echo ${SOURCE}
             # ${{ env.CXX }} -fsigned-char ${CPP} -o ${{ env.Build_PATH }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }}
             # 优化大小
-            g++ ${SOURCE} -o ${{ env.Build_PATH }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }} -std=c++11 -Os -s -static 
+            ${{ env.cpp }} ${SOURCE} -o ${{ env.Build_PATH }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }} -std=c++11 -Os -s -static 
           else
             SOURCE=$(find . -type f -name "*.c" -exec basename {} \;)
             echo ${SOURCE}
-            gcc ${SOURCE} -o ${{ env.Build_PATH }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }} -Os 
+            ${{ env. }} ${SOURCE} -o ${{ env.Build_PATH }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }} -Os 
           fi
           echo "status=success" >> $GITHUB_OUTPUT
           cd -
