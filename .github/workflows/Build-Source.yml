@@ -122,11 +122,11 @@ jobs:
             echo -e "\e[1;32m Start downloading the SDK \e[0m"
             Status="$(Download_sdk.sh ${Download_URL} ${SDK_URL_PATH})"
             [[ -n "Status" ]] || exec
-            ls
           fi
           BIN="$(find . -type l -name "*-linux-gcc" -print0 | xargs -0 dirname)"
           find . -type l -name "*-linux-gcc" -exec bash -c 'mv "$0" "$(dirname $0)/gcc"' {} \;
           find . -type l -name "*-linux-g++" -exec bash -c 'mv "$0" "$(dirname $0)/g++"' {} \;
+          ls ${BIN}
           sudo sed -i '$a\export PATH=$PATH:'"${BIN}" /etc/profile
           echo "status=success" >> $GITHUB_OUTPUT
           cd -
@@ -141,8 +141,6 @@ jobs:
           git clone https://3wlh:${{ secrets.TOKEN_3WLH }}@github.com/3wlh/Source
           test -d "Source/C++/OpenWrt" && mv Source/C++/OpenWrt ./
           test -d "OpenWrt" && rm -rf Source
-          # ${{ env.CXX }} -v
-          # ${{ env.CC }} -v
           echo "status=success" >> $GITHUB_OUTPUT
           cd -
         
