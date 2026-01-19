@@ -102,8 +102,8 @@ jobs:
       
       - name: Set executable permissions
         run: |
-          sudo chmod -R +x ${{ github.workspace }}/.github/.sh/
-          sudo cp $(pwd)/.github/.sh/* /bin/
+          sudo chmod -R +x $(pwd)/.github/.sh/
+          find $(pwd)/.github/.sh/ -name "*.sh" -exec sudo bash -c 'ln -sf "$0" "/bin/$(basename ${0%.*})"' {} \;
           
       - name: Configure environment variables
         run: |
@@ -119,7 +119,7 @@ jobs:
           cd "${{ env.PATH_CACHE }}"
           if [[ $(du -s "${{ env.PATH_CACHE }}" | awk '{ print $1}') -lt 10240 ]]; then
             echo -e "\e[1;32m Start downloading the SDK \e[0m"
-            Status="$(Download_sdk.sh ${Download_URL} ${SDK_URL_PATH})"
+            Status="$(Download_sdk ${Download_URL} ${SDK_URL_PATH})"
             [[ -n "Status" ]] || exec
           fi
           BIN="$(find ${{ env.PATH_CACHE }} -type l -name "*-linux-gcc" -print0 | xargs -0 dirname)"
