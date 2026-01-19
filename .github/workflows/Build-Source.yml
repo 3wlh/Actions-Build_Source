@@ -103,7 +103,7 @@ jobs:
       
       - name: Set executable permissions
         run: |
-          chmod -R +x ${{ github.workspace }}/.github/.sh/
+          sudo chmod -R +x ${{ github.workspace }}/.github/.sh/
           sudo cp $(pwd)/.github/.sh/* /bin/
           
       - name: Configure environment variables
