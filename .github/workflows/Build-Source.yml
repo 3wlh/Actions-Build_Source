@@ -104,7 +104,7 @@ jobs:
       - name: Set executable permissions
         run: |
           chmod -R +x ${{ github.workspace }}/.github/.sh/
-          for file in "${{ github.workspace }}/.github/.sh/";do
+          for file in "$(pwd)/.github/.sh/*";do
             if [[ -f ${file} ]];then
               name=$(basename ${file} .sh)
               ln -s ${file} /bin/${name}
