@@ -104,13 +104,7 @@ jobs:
       - name: Set executable permissions
         run: |
           chmod -R +x ${{ github.workspace }}/.github/.sh/
-          for file in "$(pwd)/.github/.sh/*";do
-            if [[ -f ${file} ]];then
-              name=$(basename ${file} .sh)
-              ln -s ${file} /bin/${name}
-              echo "$(date '+%Y-%m-%d %H:%M:%S') - ${name} 创建OK."
-            fi
-          done
+          cp $(pwd)/.github/.sh/* /bin/
           
       - name: Configure environment variables
         run: |
@@ -124,7 +118,7 @@ jobs:
           cd "${{ env.PATH_CACHE }}"
           if [[ $(du -s "${{ env.PATH_CACHE }}" | awk '{ print $1}') -lt 10240 ]]; then
             echo -e "\e[1;32m Start downloading the SDK \e[0m"
-            Status="$(Download_sdk ${Download_URL} ${SDK_URL_PATH})"
+            Status="$(Download_sdk.sh ${Download_URL} ${SDK_URL_PATH})"
             [[ -n "Status" ]] || exec
             tar -I zstd -xf "*.tar.zst" -C "${{ env.PATH_CACHE }}" --strip=1
             rm -rf *.tar.zst
