@@ -108,7 +108,8 @@ jobs:
           
       - name: Configure environment variables
         run: |
-
+          echo -e "\e[1;32m "$(g++ --version | head -n 1)" \e[0m"
+          echo -e "\e[1;32m "$(gcc --version | head -n 1)" \e[0m"
           test -d "${{ env.PATH_CACHE }}" || mkdir -p "${{ env.PATH_CACHE }}"
           echo "SOURCE_PATH=$(mktemp -d)" >> $GITHUB_ENV
           
