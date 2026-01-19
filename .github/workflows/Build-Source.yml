@@ -110,7 +110,8 @@ jobs:
               ln -s ${file} /bin/${name}
               echo "$(date '+%Y-%m-%d %H:%M:%S') - ${name} 创建OK."
             fi
-      
+          done
+          
       - name: Configure environment variables
         run: |
 
