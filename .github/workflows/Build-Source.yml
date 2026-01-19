@@ -150,16 +150,15 @@ jobs:
           echo -e "\e[1;32m "$(gcc --version | head -n 1)" \e[0m"
           cd "${{ env.SOURCE_PATH }}/${{ env.SOURCE }}"
           SOURCE=$(find . -type f -name "*.cpp" -exec basename {} \;)
-          echo ${CPP}
           if [ -n "${SOURCE}" ]; then
             echo ${SOURCE}
             # ${{ env.CXX }} -fsigned-char ${CPP} -o ${{ env.Build_PATH }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }}
             # 优化大小
-            g++ -Os ${CPP} -o ${{ env.Build_PATH }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }}
+            g++ ${SOURCE} -o ${{ env.Build_PATH }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }} -std=c++11 -Os -s -static 
           else
             SOURCE=$(find . -type f -name "*.c" -exec basename {} \;)
             echo ${SOURCE}
-            gcc -Os ${C} -o ${{ env.Build_PATH }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }}  
+            gcc -Os ${SOURCE} -o ${{ env.Build_PATH }}/${{ env.PACKAGE_NAME }}-${{ matrix.arch }}  
           fi
           echo "status=success" >> $GITHUB_OUTPUT
           cd -
