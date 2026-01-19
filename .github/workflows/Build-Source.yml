@@ -124,10 +124,11 @@ jobs:
             [[ -n "Status" ]] || exec
             ls
           fi
-          find . -type l -name "*-linux-g++*" -exec sudo ln -sf {} /bin/g++ \;
-          find . -type l -name "*-linux-gcc*" -exec sudo ln -sf {} /bin/gcc \;
-          echo "status=success" >> $GITHUB_OUTPUT
           cd -
+          find "${{ env.PATH_CACHE }}" -type l -name "*-linux-g++*" -exec sudo ln -sf {} /bin/g++ \;
+          find "${{ env.PATH_CACHE }}" -type l -name "*-linux-gcc*" -exec sudo ln -sf {} /bin/gcc \;
+          echo "status=success" >> $GITHUB_OUTPUT
+          ls /bin
 
       - name: Download and Source
         id: source
