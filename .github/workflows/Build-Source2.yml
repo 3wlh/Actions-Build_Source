@@ -205,17 +205,10 @@ jobs:
       - name: Create directory
         run: |
           test -d "${{ env.PACKAGE_NAME }}" || mkdir -p "${{ env.PACKAGE_NAME }}"
-      
-      - name: Download ${{ env.PACKAGE_NAME }}-aarch64_generic
-        uses: actions/download-artifact@v4
+
+      - name: Download ${{ env.PACKAGE_NAME }}
+        uses: actions/download-artifact@v5
         with:
-          name: ${{ env.PACKAGE_NAME }}-aarch64_generic
-          path: ${{ env.PACKAGE_NAME }}
-      
-      - name: Download ${{ env.PACKAGE_NAME }}-x86_64
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ env.PACKAGE_NAME }}-x86_64
           path: ${{ env.PACKAGE_NAME }}
       
       - name: Package directory
