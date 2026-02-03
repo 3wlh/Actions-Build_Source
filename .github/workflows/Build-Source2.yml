@@ -202,14 +202,15 @@ jobs:
     env:
       Time: ${{ needs.initial.outputs.time }}
     steps:
-      - name: Create directory
+      - name: Create Directory
         run: |
           test -d "${{ env.PACKAGE_NAME }}" || mkdir -p "${{ env.PACKAGE_NAME }}"
 
       - name: Download ${{ env.PACKAGE_NAME }}
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@main
         with:
           path: ${{ env.PACKAGE_NAME }}
+          merge-multiple: true
       
       - name: Package directory
         id: pack
