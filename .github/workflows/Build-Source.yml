@@ -22,6 +22,7 @@ on:
         type: choice
         options:
           - all
+          - sse_server
           - api
           - wxpusher
           - sub
