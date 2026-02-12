@@ -22,7 +22,7 @@ on:
         type: choice
         options:
           - all
-          - sse_server
+          - sse_msg
           - api
           - wxpusher
           - openssl.cgi
