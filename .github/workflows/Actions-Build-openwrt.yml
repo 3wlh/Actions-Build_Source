@@ -23,6 +23,7 @@ on:
           - sseconsole
           - wsconsole
           - docker_web
+          - wake-on-lan
           - api
           - wxpusher
           - sub
