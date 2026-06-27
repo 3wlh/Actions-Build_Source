@@ -35,8 +35,18 @@ jobs:
           #sudo apt-get remove gcc g++
       
       - name: Create Directories
+        env:
+          TARGET_ARCH: ${{ matrix.arch }}
         run: |
           # ✅初始化设置
+          case "$TARGET_ARCH" in
+            *aarch64*)
+              echo "arch=arm64" >> $GITHUB_ENV
+              ;;
+            *x86_64*)
+              echo "arch=amd64" >> $GITHUB_ENV
+              ;;
+          esac
           echo "SOURCE_PATH=$(mktemp -d)" >> $GITHUB_ENV
           test -d "${{ env.Build_PATH }}" || mkdir -pm 755 "${{ env.Build_PATH }}"
           
@@ -72,11 +82,11 @@ jobs:
           echo "✅源码文件: ${files}"
           if [ -n "$files" ]; then
             echo "${files}"
-            g++ ${files} -o ${{ env.Build_PATH }}/${{ env.PACKAGE }}-${{ matrix.arch }} ${Argv}
+            g++ ${files} -o ${{ env.Build_PATH }}/${{ env.PACKAGE }}-${{ env.arch }} ${Argv}
           else
             files=$(find . -type f -name "*.c")
             echo ${files}
-            gcc ${files} -o ${{ env.Build_PATH }}/${{ env.PACKAGE }}-${{ matrix.arch }} ${Argv}
+            gcc ${files} -o ${{ env.Build_PATH }}/${{ env.PACKAGE }}-${{ env.arch }} ${Argv}
           fi
           echo "status=success" >> $GITHUB_OUTPUT
           cd -
