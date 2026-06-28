@@ -77,16 +77,16 @@ jobs:
           # ✅开始编译源码
           source /etc/profile
           cd "OpenWrt/${{ env.PACKAGE }}"
-          files=$(find . -type f -name "*.cpp")
+          files=$(find . -type f -name "*.c")
           Argv="-Os -s"
           echo "✅源码文件: ${files}"
           if [ -n "$files" ]; then
             echo "${files}"
-            g++ ${files} -o ${{ env.Build_PATH }}/${{ env.PACKAGE }}-${{ env.arch }} ${Argv}
-          else
-            files=$(find . -type f -name "*.c")
-            echo ${files}
             gcc ${files} -o ${{ env.Build_PATH }}/${{ env.PACKAGE }}-${{ env.arch }} ${Argv}
+          else
+            files=$(find . -type f -name "*.cpp")
+            echo ${files}
+            g++ ${files} -o ${{ env.Build_PATH }}/${{ env.PACKAGE }}-${{ env.arch }} ${Argv}
           fi
           echo "status=success" >> $GITHUB_OUTPUT
           cd -
