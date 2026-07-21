@@ -24,6 +24,7 @@ on:
           - wsconsole
           - docker_web
           - wake-on-lan
+          - mddns-script
           - api
           - wxpusher
           - sub
