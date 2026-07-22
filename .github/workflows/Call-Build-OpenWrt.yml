@@ -118,16 +118,20 @@ jobs:
           path: ${{ env.PACKAGE }}
           merge-multiple: true
       
-      - name: UPX compression process
+      
+      - name: Install UPX
         if: (inputs.upx == 'true')
-        working-directory: ${{ env.PACKAGE }}
         uses: crazy-max/ghaction-upx@v4
         with:
           install-only: true
+
+      - name: UPX compression process
+        if: (inputs.upx == 'true')
+        working-directory: ${{ env.PACKAGE }}
         run: |
           if [ -d "$(pwd)" ] && [ "$(ls -A $(pwd))" ]; then
             upx -9 *
-          if
+          fi
       
       - name: Pack into a gz files
         if: (inputs.pack == 'true')
