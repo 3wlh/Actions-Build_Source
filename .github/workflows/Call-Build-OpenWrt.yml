@@ -120,13 +120,13 @@ jobs:
       
       
       - name: Install UPX
-        if: (inputs.upx == 'true')
+        if: inputs.upx
         uses: crazy-max/ghaction-upx@v4
         with:
           install-only: true
 
       - name: UPX compression process
-        if: (inputs.upx == 'true')
+        if: inputs.upx
         working-directory: ${{ env.PACKAGE }}
         run: |
           if [ -d "$(pwd)" ] && [ "$(ls -A $(pwd))" ]; then
@@ -134,7 +134,7 @@ jobs:
           fi
       
       - name: Pack into a gz files
-        if: (inputs.pack == 'true')
+        if: inputs.pack
         working-directory: ${{ env.PACKAGE }}
         run: |
           if [ -d "$(pwd)" ] && [ "$(ls -A $(pwd))" ]; then
