@@ -34,7 +34,6 @@ on:
           - sub.cgi
           - netlink
       
-      
       upx:
         description: 是否upx压缩
         default: false
