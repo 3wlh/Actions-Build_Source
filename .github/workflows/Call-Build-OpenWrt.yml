@@ -130,6 +130,7 @@ jobs:
         working-directory: ${{ env.PACKAGE }}
         run: |
           if [ -d "$(pwd)" ] && [ "$(ls -A $(pwd))" ]; then
+            chmod +x *
             upx -9 *
           fi
       
