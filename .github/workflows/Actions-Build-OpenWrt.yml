@@ -40,7 +40,6 @@ on:
         default: false
         type: boolean
       
-      
       pack:
         description: 是否打包(TAR.GZ)
         default: false
