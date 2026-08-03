@@ -162,7 +162,7 @@ jobs:
         if: (inputs.cnb == true && steps.check.outputs.status == 'success')
         uses: 3wlh/actions/CNB/delete-releases@main
         with:
-          repository: 3wlh/OpenWrt_Packages
+          repository: 3wlh/Build-File
           tag_name: GitHub-Actions_${{ env.PACKAGE }}
           token: ${{ secrets.TOKEN_CNB }}
         continue-on-error: true
@@ -185,7 +185,7 @@ jobs:
         if: (inputs.cnb == true && steps.check.outputs.status == 'success')
         uses: 3wlh/actions/CNB/upload-releases@main
         with:
-          repository: 3wlh/OpenWrt_Packages
+          repository: 3wlh/Build-File
           token: ${{ secrets.TOKEN_CNB }}
           tag_name: GitHub-Actions_${{ env.PACKAGE }}
           name: OpenWrt：${{ env.PACKAGE }}
