@@ -192,4 +192,4 @@ jobs:
           body: |
             ## 编译信息
             - 编译时间：`${{ env.Time }}`
-          files: ${{ env.Build_PATH }}/*
+          files: ${{ env.PACKAGE }}/*
