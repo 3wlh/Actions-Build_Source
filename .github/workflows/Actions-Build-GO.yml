@@ -14,7 +14,18 @@ on:
           - NapCat/NapCat_Service
           - Photopea
           - MDDNS
-          
+      
+      upx:
+        description: 是否upx压缩
+        default: true
+        type: boolean
+        
+      cnb:
+        description: 是否上传到(CNB)仓库
+        default: true
+        type: boolean
+        
+                 
 env:
   Build_PATH: "${{ github.workspace }}/Build"
   
@@ -32,6 +43,7 @@ jobs:
           go-version: "1.25"
       
       - name: Install UPX
+        if: (inputs.upx)
         uses: crazy-max/ghaction-upx@v4
         with:
           install-only: true
@@ -78,7 +90,9 @@ jobs:
           done               
           # 设置输出变量
           if [ -d "${{ env.Build_PATH }}" ] && [ "$(ls -A ${{ env.Build_PATH }})" ]; then
-            upx -9 ${{ env.Build_PATH }}/*
+            if {{ inputs.upx }}
+              upx -9 ${{ env.Build_PATH }}/*
+            fi
             echo "✅ 编译成功"
             echo "status=success" >> $GITHUB_OUTPUT
           else
@@ -92,6 +106,15 @@ jobs:
           tag_name: GitHub-Actions_${{ env.Name }}
           delete_release: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Delete CNB Release
+        if: (inputs.cnb == true && steps.build_source.outputs.status == 'success')
+        uses: 3wlh/actions/CNB/delete-releases@main
+        with:
+          repository: 3wlh/OpenWrt_Packages
+          tag_name: GitHub-Actions_${{ env.Name }}
+          token: ${{ secrets.TOKEN_CNB }}
+        continue-on-error: true
 
       - name: Upload to Release
         if: (steps.build_source.outputs.status == 'success')
@@ -99,6 +122,19 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          tag_name: GitHub-Actions_${{ env.Name }}
+          name: GO：${{ env.Name }}
+          body: |
+            ## 编译信息
+            - 编译时间：`${{ env.Time }}`
+          files: ${{ env.Build_PATH }}/*
+          
+      - name: Upload as release assets CNB
+        if: (inputs.cnb == true && steps.build_source.outputs.status == 'success')
+        uses: 3wlh/actions/CNB/upload-releases@main
+        with:
+          repository: 3wlh/OpenWrt_Packages
+          token: ${{ secrets.TOKEN_CNB }}
           tag_name: GitHub-Actions_${{ env.Name }}
           name: GO：${{ env.Name }}
           body: |

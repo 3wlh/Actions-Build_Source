@@ -43,6 +43,12 @@ on:
         description: 是否打包(TAR.GZ)
         default: false
         type: boolean
+        
+      cnb:
+        description: 是否上传到(CNB)仓库
+        default: true
+        type: boolean
+    
     
 jobs:
   Call-Build-OpenWrt:
@@ -54,3 +60,4 @@ jobs:
       source_name: ${{ inputs.source_name }}
       upx: ${{ inputs.upx }}
       pack: ${{ inputs.pack }}
+      cnb: ${{ inputs.cnb }}

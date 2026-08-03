@@ -11,6 +11,8 @@ on:
         type: boolean
       upx:
         type: boolean
+      cnb:
+        type: boolean
       
 env:
   PACKAGE: ${{ inputs.source_name }}
@@ -155,6 +157,15 @@ jobs:
           tag_name: GitHub-Actions_${{ env.PACKAGE }}
           delete_release: true
           github_token: ${{ github.token }}
+          
+      - name: Delete CNB Release
+        if: (inputs.cnb == true && steps.check.outputs.status == 'success')
+        uses: 3wlh/actions/CNB/delete-releases@main
+        with:
+          repository: 3wlh/OpenWrt_Packages
+          tag_name: GitHub-Actions_${{ env.PACKAGE }}
+          token: ${{ secrets.TOKEN_CNB }}
+        continue-on-error: true
       
       - name: Upload to Release
         if: (steps.check.outputs.status == 'success')
@@ -169,3 +180,16 @@ jobs:
             - 编译时间：`${{ env.Time }}`
             - SDK版本: `${{ inputs.version }}`
           files: ${{ env.PACKAGE }}/*
+          
+      - name: Upload as release assets CNB
+        if: (inputs.cnb == true && steps.check.outputs.status == 'success')
+        uses: 3wlh/actions/CNB/upload-releases@main
+        with:
+          repository: 3wlh/OpenWrt_Packages
+          token: ${{ secrets.TOKEN_CNB }}
+          tag_name: GitHub-Actions_${{ env.PACKAGE }}
+          name: OpenWrt：${{ env.PACKAGE }}
+          body: |
+            ## 编译信息
+            - 编译时间：`${{ env.Time }}`
+          files: ${{ env.Build_PATH }}/*
