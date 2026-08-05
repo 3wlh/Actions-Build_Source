@@ -22,7 +22,7 @@ on:
           - all
           - sseconsole
           - wsconsole
-          - docker_web
+          - docker-web
           - wake-on-lan
           - mddns-script
           - api
