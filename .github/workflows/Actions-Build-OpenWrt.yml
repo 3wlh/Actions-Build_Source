@@ -25,6 +25,7 @@ on:
           - docker-web
           - wake-on-lan
           - mddns-script
+          - bemfa
           - api
           - wxpusher
           - sub
